@@ -255,42 +255,42 @@ def block_builder(block_type, inchannels, downsample):
     block = ResNet(inchannels=inchannels, outchannels=64, downsample=downsample)
   elif block_type == 2: # ResNet 128
     block = ResNet(inchannels=inchannels, outchannels=128, downsample=downsample)
-  elif block_type == "ResNet_256": # ResNet 256
-    block = ResNet(inchannels=inchannels, outchannels=256, downsample=downsample)
-  elif block_type == "ResNet_512": # ResNet 512
-    block = ResNet(inchannels=inchannels, outchannels=512, downsample=downsample)
-  elif block_type == "ImpResNet_64": # ImpResNet 64
-    block = ImpResNet(inchannels=inchannels, outchannels=64, downsample=downsample)
-  elif block_type == "ImpResNet_128": # ImpResNet 128
-    block = ImpResNet(inchannels=inchannels, outchannels=128, downsample=downsample)
-  elif block_type == "ImpResNet_256": # ImpResNet 256
-    block = ImpResNet(inchannels=inchannels, outchannels=256, downsample=downsample)
-  elif block_type == "ImpResNet_512": # ImpResNet 512
-    block = ImpResNet(inchannels=inchannels, outchannels=512, downsample=downsample)
-  elif block_type == "MobileNetv2_64":
-    block = MobileNetv2(inchannels=inchannels, outchannels=64, downsample=downsample)
-  elif block_type == "MobileNetv2_128":
-    block = MobileNetv2(inchannels=inchannels, outchannels=128, downsample=downsample)
-  elif block_type == "MobileNetv2_256":
-    block = MobileNetv2(inchannels=inchannels, outchannels=256, downsample=downsample)
-  elif block_type == "MobileNetv2_512":
-    block = MobileNetv2(inchannels=inchannels, outchannels=512, downsample=downsample)
-  elif block_type == "MobileNetv3_64":
-    block = MobileNetv3(inchannels=inchannels, outchannels=64, downsample=downsample)
-  elif block_type == "MobileNetv3_128":
-    block = MobileNetv3(inchannels=inchannels, outchannels=128, downsample=downsample)
-  elif block_type == "MobileNetv3_256":
-    block = MobileNetv3(inchannels=inchannels, outchannels=256, downsample=downsample)
-  elif block_type == "MobileNetv3_512":
-    block = MobileNetv3(inchannels=inchannels, outchannels=512, downsample=downsample)
-  elif block_type == "ConvNext_64":
-    block = ConvNext(inchannels=inchannels, outchannels=64, downsample=downsample)
-  elif block_type == "ConvNext_128":
-    block = ConvNext(inchannels=inchannels, outchannels=128, downsample=downsample)
-  elif block_type == "ConvNext_256":
-    block = ConvNext(inchannels=inchannels, outchannels=256, downsample=downsample)
-  elif block_type == "ConvNext_512":
-    block = ConvNext(inchannels=inchannels, outchannels=512, downsample=downsample)
+  # elif block_type == "ResNet_256": # ResNet 256
+  #   block = ResNet(inchannels=inchannels, outchannels=256, downsample=downsample)
+  # elif block_type == "ResNet_512": # ResNet 512
+  #   block = ResNet(inchannels=inchannels, outchannels=512, downsample=downsample)
+  # elif block_type == "ImpResNet_64": # ImpResNet 64
+  #   block = ImpResNet(inchannels=inchannels, outchannels=64, downsample=downsample)
+  # elif block_type == "ImpResNet_128": # ImpResNet 128
+  #   block = ImpResNet(inchannels=inchannels, outchannels=128, downsample=downsample)
+  # elif block_type == "ImpResNet_256": # ImpResNet 256
+  #   block = ImpResNet(inchannels=inchannels, outchannels=256, downsample=downsample)
+  # elif block_type == "ImpResNet_512": # ImpResNet 512
+  #   block = ImpResNet(inchannels=inchannels, outchannels=512, downsample=downsample)
+  # elif block_type == "MobileNetv2_64":
+  #   block = MobileNetv2(inchannels=inchannels, outchannels=64, downsample=downsample)
+  # elif block_type == "MobileNetv2_128":
+  #   block = MobileNetv2(inchannels=inchannels, outchannels=128, downsample=downsample)
+  # elif block_type == "MobileNetv2_256":
+  #   block = MobileNetv2(inchannels=inchannels, outchannels=256, downsample=downsample)
+  # elif block_type == "MobileNetv2_512":
+  #   block = MobileNetv2(inchannels=inchannels, outchannels=512, downsample=downsample)
+  # elif block_type == "MobileNetv3_64":
+  #   block = MobileNetv3(inchannels=inchannels, outchannels=64, downsample=downsample)
+  # elif block_type == "MobileNetv3_128":
+  #   block = MobileNetv3(inchannels=inchannels, outchannels=128, downsample=downsample)
+  # elif block_type == "MobileNetv3_256":
+  #   block = MobileNetv3(inchannels=inchannels, outchannels=256, downsample=downsample)
+  # elif block_type == "MobileNetv3_512":
+  #   block = MobileNetv3(inchannels=inchannels, outchannels=512, downsample=downsample)
+  # elif block_type == "ConvNext_64":
+  #   block = ConvNext(inchannels=inchannels, outchannels=64, downsample=downsample)
+  # elif block_type == "ConvNext_128":
+  #   block = ConvNext(inchannels=inchannels, outchannels=128, downsample=downsample)
+  # elif block_type == "ConvNext_256":
+  #   block = ConvNext(inchannels=inchannels, outchannels=256, downsample=downsample)
+  # elif block_type == "ConvNext_512":
+  #   block = ConvNext(inchannels=inchannels, outchannels=512, downsample=downsample)
   return block, block.outchannels
 
 class GELnetwork(Module):
