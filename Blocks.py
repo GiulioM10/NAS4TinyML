@@ -308,6 +308,7 @@ class GELnetwork(Module):
     self.blocks.append(stem_conv)
 
     inchannels = 64
+    block = None
 
     for index, gene in enumerate(genome):
       if index%4 == 3:
