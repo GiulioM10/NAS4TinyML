@@ -222,6 +222,33 @@ class MobileNetv3(Block):
     return out
   
 def block_builder(block_type, inchannels, downsample):
+
+  genelist = [
+    "Empty",
+    "ResNet_64",
+    "ResNet_128",
+    "ResNet_256",
+    "ResNet_512",
+    "ImpResNet_64",
+    "ImpResNet_128",
+    "ImpResNet_256",
+    "ImpResNet_512",
+    "MobileNetv2_64",
+    "MobileNetv2_128",
+    "MobileNetv2_256",
+    "MobileNetv2_512",
+    "MobileNetv3_64",
+    "MobileNetv3_128",
+    "MobileNetv3_256",
+    "MobileNetv3_512",
+    "ConvNext_64",
+    "ConvNext_128",
+    "ConvNext_256",
+    "ConvNext_512",
+  ]
+
+  block_type = genelist[block_type]
+
   if block_type == "Empty":
       block = EmptyBlock(inchannels=inchannels, outchannels=inchannels, downsample=downsample)
   elif block_type == "ResNet_64": # ResNet 64
