@@ -77,7 +77,7 @@ BASE_INSTANCES_URL="http://images.cocodataset.org/annotations"
 INSTANCES_FILE="annotations_trainval${YEAR}.zip"
 download_and_unzip ${BASE_INSTANCES_URL} "${INSTANCES_FILE}"
 
-cd ../COCO/
+cd ../../COCO/
 
 mv train2014/* all2014/
 mv val2014/* all2014/
