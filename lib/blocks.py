@@ -277,3 +277,121 @@ class MobileNetv3(Block):
       out = out + x
 
     return out
+  
+
+### Unused Blocks
+# class ResNet(Block):
+#   def __init__(self,
+#                inchannels: int,
+#                outchannels: int,
+#                downsample=False
+#                ) -> None:
+#     super().__init__(inchannels, outchannels, downsample)
+
+#     '''
+#     This class implements the classic Residual block.
+#     If the input is downsampled or the number of features changes the shortcut
+#     adapts the original tensor accordingly
+#     '''
+
+#     ## The residual Block
+#     self.cell = nn.Sequential(
+#         nn.Conv2d(
+#             self.inchannels, self.outchannels,
+#             kernel_size=3, stride=self.stride, padding=1
+#         ),
+#         nn.BatchNorm2d(self.outchannels),
+#         nn.ReLU(),
+#         nn.Conv2d(
+#             self.outchannels, self.outchannels,
+#             kernel_size=3, stride=1, padding=1
+#         ),
+#         nn.BatchNorm2d(self.outchannels)
+#     ) 
+
+#     ## The shortcut
+#     if self.inchannels == self.outchannels and not self.downsample:
+#       self.shortcut = nn.Sequential(nn.Identity())
+#     else:
+#       self.shortcut = nn.Sequential(
+#           nn.Conv2d(
+#               self.inchannels, self.outchannels,
+#               kernel_size=1, stride=self.stride
+#           ),
+#           nn.BatchNorm2d(self.outchannels)
+#       )
+
+#     ## Final activation
+#     self.act = nn.ReLU()
+
+#   def forward(self, x: torch.Tensor) -> torch.Tensor:
+#     F = self.cell(x) # Residual
+#     x = self.shortcut(x) # Adjust the dimensions of the tensor
+#     out = F + x # Sum residual and original value
+#     out = self.act(out) # Non-linear activation function
+
+#     return out
+
+
+# class ImpResNet(Block):
+#   def __init__(self,
+#                inchannels: int,
+#                outchannels: int,
+#                kernel_size:int,
+#                downsample=False) -> None:
+#     super().__init__(inchannels, outchannels, kernel_size, downsample)
+
+#     '''
+#     This class implements an improved version of the residual block.
+#     If the input is downsampled or the number of features changes the shortcut
+#     adapts the original tensor accordingly
+#     '''
+
+#     if self.inchannels == self.outchannels and not self.downsample:
+#       self.adapt = nn.Sequential(nn.Identity())
+#     else:
+#       self.adapt = nn.Sequential(
+#           nn.GroupNorm(num_groups=1, num_channels=self.inchannels),
+#           nn.Conv2d(
+#               self.inchannels, self.outchannels,
+#               kernel_size=3, stride=self.stride, padding=1
+#           )
+#       )
+
+
+#     # Residual block
+#     self.cell = nn.Sequential(
+#         nn.BatchNorm2d(self.inchannels),
+#         nn.ReLU(),
+#         nn.Conv2d(
+#             self.outchannels, self.outchannels,
+#             kernel_size=self.kernel_size, stride=1, padding=self.padding
+#         ),
+#         nn.BatchNorm2d(self.outchannels),
+#         nn.ReLU(),
+#         nn.Conv2d(
+#             self.outchannels, self.outchannels,
+#             kernel_size=self.kernel_size, stride=1, padding=self.padding
+#         )
+#     )
+
+
+#     # Shortcut
+#     if self.inchannels == self.outchannels and not self.downsample:
+#       self.shortcut = nn.Sequential()
+#     else:
+#       self.shortcut = nn.Sequential(
+#           nn.BatchNorm2d(self.inchannels),
+#           nn.ReLU(),
+#           nn.Conv2d(
+#               self.inchannels, self.outchannels,
+#               kernel_size=1, stride=self.stride
+#           )
+#       )
+  
+#   def forward(self, x: torch.Tensor) -> torch.Tensor:
+#     F = self.cell(x)
+#     x = self.shortcut(x)
+#     out = F + x
+
+#     return out
