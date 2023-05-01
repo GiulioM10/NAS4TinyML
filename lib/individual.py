@@ -52,6 +52,9 @@ class Individual:
     else:
       self._compute_cost_info(self.get_network())
       return self._cost_info
+    
+  def set_generation(self, gen):
+    self.generation = gen
 
   def print_structure(self):
     print("---- INDIVIDUAL STRUCTURE ---")
