@@ -213,7 +213,7 @@ def compute_tfm(exemplar: Individual,
 
 
 class Space(ISpace):
-  def __init__(self, net_length: list, block_list:list, ks_list: list,
+  def __init__(self, net_length: int, block_list:list, ks_list: list,
                channel_list: list, exp_list: list, downsample_blocks: list,
                dataset: DataLoader, device: torch.device, 
                metrics  = ['naswot', 'logsynflow', 'synflow']
