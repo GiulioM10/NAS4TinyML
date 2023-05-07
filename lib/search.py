@@ -25,7 +25,7 @@ class Search:
         population.append(new)
     return population
   
-  def _return_top_k(self, population, k):
+  def return_top_k(self, population, k):
     individuals = [individual for individual in population if individual.has_metrics]
     for individual in individuals:
       individual.rank = []
