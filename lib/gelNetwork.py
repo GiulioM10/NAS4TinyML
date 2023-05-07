@@ -4,8 +4,10 @@ import torch
 from torch.nn import Module
 import torch.nn as nn
 import fvcore.nn as fvc
+import types
+from typing import List
 
-def block_builder(block, ks, inchan, outchan, expa, dwns) -> Block:
+def block_builder(block: str, ks: int, inchan: int, outchan: int, expa: int, dwns: bool) -> Block:
   '''
   This function returns an instance of the specified block type
   '''
@@ -36,7 +38,7 @@ def block_builder(block, ks, inchan, outchan, expa, dwns) -> Block:
 
 
 class GELnetwork(Module):
-  def __init__(self, genome,*args, **kwargs) -> None:
+  def __init__(self, genome: List[List],*args, **kwargs) -> None:
     super(GELnetwork, self).__init__(*args, **kwargs)
     self.blocks = nn.ModuleList([])
 

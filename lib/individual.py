@@ -4,13 +4,17 @@ import torch
 from torch.nn import Module
 import torch.nn as nn
 import fvcore.nn as fvc
+from space import Space
+import types
+from typing import List
 
 class Individual:
-  def __init__(self, genotype, device, generation = 0) -> None:
+  def __init__(self, genotype: List[List], space: Space, device: torch.device, generation = 0) -> None:
     super().__init__()
 
     self.genotype = genotype
     self.generation = generation
+    self.space = space
     self.device = device
     self.born = False
     self.has_metrics = False
@@ -35,25 +39,26 @@ class Individual:
     .total()/1e6
     self._cost_info = costs
 
-  def set_metrics(self, metrics):
-    self._metrics = metrics
+  def set_metrics(self, metrics: dict = None):
+    if metrics is None:
+      self._metrics = self.space.compute_tfm(self)
+    else:
+      self._metrics = metrics
     self.has_metrics = True
   
-  def get_metrics(self):
-    if self.has_metrics:
-      return self._metrics
-    else:
-      raise ValueError("Metrics not computed yet")
+  def get_metrics(self) -> dict:
+    if not self.has_metrics:
+      self.set_metrics()
+    return self._metrics
 
-
-  def get_cost_info(self):
+  def get_cost_info(self) -> dict:
     if self._cost_info is not None:
       return self._cost_info
     else:
       self._compute_cost_info(self.get_network())
       return self._cost_info
     
-  def set_generation(self, gen):
+  def set_generation(self, gen: int):
     self.generation = gen
 
   def print_structure(self):
