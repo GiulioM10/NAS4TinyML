@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from torch.utils.data import DataLoader
 import torch.nn as nn
-from individual import Individual
+from individual import Individual, ISpace
 import types
 from typing import Union, Text
 from torch.nn.modules.batchnorm import _BatchNorm
@@ -212,7 +212,7 @@ def compute_tfm(exemplar: Individual,
 
 
 
-class Space:
+class Space(ISpace):
   def __init__(self, net_length: list, block_list:list, ks_list: list,
                channel_list: list, exp_list: list, downsample_blocks: list,
                dataset: DataLoader, device: torch.device, 

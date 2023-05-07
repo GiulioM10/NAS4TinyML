@@ -4,12 +4,15 @@ import torch
 from torch.nn import Module
 import torch.nn as nn
 import fvcore.nn as fvc
-from space import Space
 import types
 from typing import List
 
+class ISpace:
+  def __init__(self) -> None:
+    pass
+
 class Individual:
-  def __init__(self, genotype: List[List], space: Space, device: torch.device, generation = 0) -> None:
+  def __init__(self, genotype: List[List], space: ISpace, device: torch.device, generation = 0) -> None:
     super().__init__()
 
     self.genotype = genotype
