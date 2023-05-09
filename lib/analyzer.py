@@ -28,3 +28,17 @@ class Analyzer():
         json_string = json.dumps(output, default=convert_int64)
         with open(self.output_file, 'w') as out_file:
             out_file.write(json_string)
+
+    def load_experiments_result(self, file_path: str = None, device = None):
+        if file_path is None:
+            file_path = self.output_file
+        
+        with open(file_path, 'r') as open_file:
+            data = json.load(open_file)
+        results = []
+        for individual in data["population"]:
+            ind = Individual(individual["genome"], None, device)
+            ind.set_cost_info(individual["cost_info"])
+            ind.set_metrics(individual["metrics"])
+            results.append(ind)
+        return results
