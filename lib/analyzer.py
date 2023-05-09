@@ -10,6 +10,7 @@ class Analyzer():
     def snapshot_experiment(self, population: List[Individual], elapsed_time: float) -> None:
         output = {}
         output["pop_size"] = len(population)
+        output["elapsed_hours"] = elapsed_time/60
 
         def convert_int64(obj):
             if isinstance(obj, np.int64):
@@ -24,7 +25,6 @@ class Analyzer():
             indi["cost_info"] = individual.get_cost_info()
             indi["metrics"] = individual.get_metrics()
             output["population"].append(indi)
-        output["elapsed_hours"] = elapsed_time/60
         json_string = json.dumps(output, default=convert_int64)
         print(json_string)
         with open(self.output_file, 'w') as out_file:
