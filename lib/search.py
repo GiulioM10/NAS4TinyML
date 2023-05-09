@@ -43,27 +43,52 @@ class Search:
     individuals.sort(key = lambda x: x.rank)
 
     return np.array(individuals)[:k]
+  
+  def return_best(self, population):
+    individuals = [individual for individual in population if individual.has_metrics]
+    for individual in individuals:
+      individual.rank = []
 
-  def random(self, max_time: float, save_time: float, max_before_save: int = 25, prev_best: Individual = None):
+    for metric_n in self.space.metrics:
+      individuals.sort(key = lambda x: -x.get_metrics()[metric_n])
+      for index, individual in enumerate(individuals):
+        individual.rank.append(index + 1)
+    
+    for individual in individuals:
+      individual.rank = np.mean(individual.rank)
+
+    individuals.sort(key = lambda x: x.rank)
+
+    best = [individuals[0]]
+    for i in range(len(individuals) - 1):
+        if individuals[i + 1].rank == individuals[i].rank:
+            best.append(individuals[i + 1])
+        else:
+            break
+    return best
+
+  def random(self, max_time: float, save_time: float, prev_best: Individual = None):
     elaps = 0
     start = time.time()
     while elaps < max_time:
         elaps_save_time = 0
         individuals = []
         if prev_best is not None:
-          individuals.append(prev_best)
+          for best_ind in prev_best:
+            individuals.append(best_ind)
         start_save_time = time.time()
-        while elaps_save_time < save_time and len(individuals) < max_before_save:
+        while elaps_save_time < save_time:
             new_network = self.population_init(1)[0]
             new_network.set_metrics()
             individuals.append(new_network)
             end_save_time = time.time()
             elaps_save_time = (end_save_time - start_save_time)/60
         # return top performing networks and save them
-        best = self.return_top_k(individuals, 1)
+        best = self.return_best(individuals)
         end = time.time()
         elaps = (end - start)/60
         self.analyzer.snapshot_experiment(best, elaps)
-        prev_best = best[0]
-        print(prev_best.rank)
+        prev_best = best
+        for prev_best_ind in prev_best:
+            print(prev_best_ind.rank)
     print("End")
