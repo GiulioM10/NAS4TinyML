@@ -53,6 +53,12 @@ class Individual:
     if not self.has_metrics:
       self.set_metrics()
     return self._metrics
+  
+  def set_cost_info(self, cost_info: dict = None):
+    if cost_info is None:
+      self._compute_cost_info
+    else:
+      self._cost_info = cost_info
 
   def get_cost_info(self) -> dict:
     if self._cost_info is not None:

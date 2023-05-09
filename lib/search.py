@@ -4,12 +4,14 @@ from space import Space
 from individual import Individual
 import types
 from typing import List
+from analyzer import Analyzer
 
 class Search:
-  def __init__(self, space: Space, max_params: float, max_flops: float) -> None:
+  def __init__(self, space: Space, max_params: float, max_flops: float, analyzer: Analyzer) -> None:
      self.space = space
      self.max_params = max_params
      self.max_flops = max_flops
+     self.analyzer = analyzer
 
   def _is_feasible(self, individual: Individual) -> bool:
     cost = individual.get_cost_info()
@@ -42,20 +44,25 @@ class Search:
 
     return np.array(individuals)[:k]
 
-  def random(self, max_time: float, save_time: float):
+  def random(self, max_time: float, save_time: float, max_before_save: int = 25, prev_best: Individual = None):
     elaps = 0
     start = time.time()
     while elaps < max_time:
-      elaps_save_time = 0
-      individuals = []
-      start_save_time = time.time()
-      while elaps_save_time < save_time and len(individuals) < 25:
-        new_network = self.population_init(1)[0]
-        new_network.set_metrics()
-        individuals.append(new_network)
-        end_save_time = time.time()
-        elaps_save_time = end_save_time - start_save_time
-      # return top performing networks and save them
-      end = time.time()
-      elaps = end - start
+        elaps_save_time = 0
+        individuals = []
+        if prev_best is not None:
+          individuals.append(prev_best)
+        start_save_time = time.time()
+        while elaps_save_time < save_time and len(individuals) < max_before_save:
+            new_network = self.population_init(1)[0]
+            new_network.set_metrics()
+            individuals.append(new_network)
+            end_save_time = time.time()
+            elaps_save_time = end_save_time - start_save_time
+        # return top performing networks and save them
+        best = self.return_top_k(individuals, 1)
+        end = time.time()
+        elaps = end - start
+        self.analyzer.snapshot_experiment(best, elaps)
+        prev_best = best[0]
     print("End")
