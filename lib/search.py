@@ -91,4 +91,5 @@ class Search:
         prev_best = best
         for prev_best_ind in prev_best:
             print(prev_best_ind.rank)
+            print("-------------")
     print("End")
