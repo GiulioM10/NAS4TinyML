@@ -216,7 +216,7 @@ class Space(ISpace):
   def __init__(self, net_length: int, block_list:list, ks_list: list,
                channel_list: list, exp_list: list, downsample_blocks: list,
                dataset: DataLoader, device: torch.device, 
-               metrics  = ['naswot', 'logsynflow', 'synflow']
+               metrics  = ['naswot', 'logsynflow'] #, 'synflow'
                ) -> None:
     self.net_length = net_length
     self.block_list = block_list
