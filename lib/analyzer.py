@@ -10,9 +10,7 @@ class Analyzer():
     def snapshot_experiment(self, population: List[Individual], elapsed_time: float) -> None:
         output = {}
         output["pop_size"] = len(population)
-        output["elapsed_hours"] = 0
         output["elapsed_hours"] = elapsed_time
-        print(elapsed_time)
 
         def convert_int64(obj):
             if isinstance(obj, np.int64):
