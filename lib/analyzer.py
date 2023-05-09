@@ -1,5 +1,5 @@
 from individual import Individual
-from numpyencoder import NumpyEncoder
+import numpy as np
 import json
 from typing import List
 
@@ -10,6 +10,13 @@ class Analyzer():
     def snapshot_experiment(self, population: List[Individual], elapsed_time: float) -> None:
         output = {}
         output["pop_size"] = len(population)
+
+        def convert_int64(obj):
+            if isinstance(obj, np.int64):
+                return int(obj)
+            else:
+                return obj
+    
         output["population"] = []
         for individual in population:
             indi = {}
@@ -17,9 +24,7 @@ class Analyzer():
             indi["cost_info"] = individual.get_cost_info()
             indi["metrics"] = individual.get_metrics()
             output["population"].append(indi)
-        output["elapsed_hours"] = elapsed_time/60
-        json_string = json.dumps(output, cls=NumpyEncoder)
+        json_string = json.dumps(output, default=convert_int64)
         print(json_string)
         with open(self.output_file, 'w') as out_file:
-            json.dump(json_string, out_file, cls=NumpyEncoder)
-            out_file.close()
+            out_file.write(json_string)
