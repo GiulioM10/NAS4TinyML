@@ -1,4 +1,5 @@
 from individual import Individual
+from numpyencoder import NumpyEncoder
 import json
 from typing import List
 
@@ -17,7 +18,7 @@ class Analyzer():
             indi["metrics"] = individual.get_metrics()
             output["population"].append(indi)
         output["elapsed_hours"] = elapsed_time/60
-        json_string = json.dumps(output)
+        json_string = json.dumps(output, cls=NumpyEncoder)
         print(json_string)
         with open(self.output_file, 'w') as out_file:
             json.dump(json_string, out_file)
