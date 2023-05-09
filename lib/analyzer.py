@@ -26,6 +26,5 @@ class Analyzer():
             indi["metrics"] = individual.get_metrics()
             output["population"].append(indi)
         json_string = json.dumps(output, default=convert_int64)
-        print(json_string)
         with open(self.output_file, 'w') as out_file:
             out_file.write(json_string)
