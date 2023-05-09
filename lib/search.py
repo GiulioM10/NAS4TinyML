@@ -65,4 +65,5 @@ class Search:
         elaps = (end - start)/60
         self.analyzer.snapshot_experiment(best, elaps)
         prev_best = best[0]
+        print(prev_best.rank)
     print("End")
