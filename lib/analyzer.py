@@ -16,7 +16,7 @@ class Analyzer():
             indi["cost_info"] = individual.get_cost_info()
             indi["metrics"] = individual.get_metrics()
             output["population"].append(indi)
-        output["elapsed_time"] = elapsed_time/3600
+        output["elapsed_hours"] = elapsed_time/60
         json_string = json.dumps(output)
         print(json_string)
         with open(self.output_file, 'w') as out_file:

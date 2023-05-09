@@ -58,11 +58,11 @@ class Search:
             new_network.set_metrics()
             individuals.append(new_network)
             end_save_time = time.time()
-            elaps_save_time = end_save_time - start_save_time
+            elaps_save_time = (end_save_time - start_save_time)/60
         # return top performing networks and save them
         best = self.return_top_k(individuals, 1)
         end = time.time()
-        elaps = end - start
+        elaps = (end - start)/60
         self.analyzer.snapshot_experiment(best, elaps)
         prev_best = best[0]
     print("End")
