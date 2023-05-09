@@ -24,6 +24,7 @@ class Individual:
 
     self._cost_info = None # dict{n. param, n. flops}
     self._metrics = None #
+    self.rank = None
 
   def get_network(self) -> Module:
     net = GELnetwork(self.genotype)
