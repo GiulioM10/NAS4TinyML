@@ -77,8 +77,12 @@ BASE_INSTANCES_URL="http://images.cocodataset.org/annotations"
 INSTANCES_FILE="annotations_trainval${YEAR}.zip"
 download_and_unzip ${BASE_INSTANCES_URL} "${INSTANCES_FILE}"
 
+echo "Copying train into all..."
 cp -a train2014/. all2014/
+echo "Copying val into all..."
 cp -a val2014/. all2014/
 
+echo "Removing train..."
 rm -r train2014/
+echo "Removing val..."
 rm -r val2014/
