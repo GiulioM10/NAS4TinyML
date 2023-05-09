@@ -21,5 +21,5 @@ class Analyzer():
         json_string = json.dumps(output, cls=NumpyEncoder)
         print(json_string)
         with open(self.output_file, 'w') as out_file:
-            json.dump(json_string, out_file)
+            json.dump(json_string, out_file, cls=NumpyEncoder)
             out_file.close()
