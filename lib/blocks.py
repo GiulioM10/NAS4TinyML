@@ -11,14 +11,14 @@ class Block(Module):
                kernel_size: int,
                downsample: bool = False
                ) -> None:
-    '''
-    This is the block interface. All the different block types inherit from 
-    this class.
+    """This is the block interface. Each type of block inherits form this class
 
-    inchannels: number of channels (features) in input
-    outchannels: number of channels (features) in output
-    downsample: a flag signaling wether we wish to downsample the features
-    '''
+    Args:
+        inchannels (int): Number of input channels
+        outchannels (int): Number of output channels
+        kernel_size (int): Kernel size
+        downsample (bool, optional): Wether this is a downsampling block. Defaults to False.
+    """
     super(Block, self).__init__()
     self.inchannels = inchannels
     self.outchannels = outchannels
@@ -44,13 +44,16 @@ class EmptyBlock(Block):
                outchannels: int,
                kernel_size: int,
                downsample=False) -> None:
-    super().__init__(inchannels, outchannels, kernel_size, downsample)
+    """This is an empty block. If it is a downsampling block or the number of channel changes then a 1x1 convolution is 
+    applied
 
-    '''
-    This class implements a block without any filters.
-    If the input is downsampled or the number of features changes the shortcut
-    adapts the original tensor accordingly
-    '''
+    Args:
+        inchannels (int): Input channels
+        outchannels (int): Output channels
+        kernel_size (int): Kernel size
+        downsample (bool, optional): Wether to do downsample. Defaults to False.
+    """
+    super().__init__(inchannels, outchannels, kernel_size, downsample)
 
     if self.inchannels == self.outchannels and not self.downsample:
       self.cell = nn.Sequential(nn.Identity())
@@ -73,15 +76,19 @@ class MobileNetv2(Block):
                kernel_size :int,
                downsample=False,
                expansion=3) -> None:
-    super().__init__(inchannels, outchannels, kernel_size, downsample)
-
-    '''
-    A state of the art block architecture built to grant good performance
+    """A state of the art block architecture built to grant good performance
     with a lower number of parameters.
     The expansion term can be changed to vary the size of the inverted 
     bottleneck.
-    '''
 
+    Args:
+        inchannels (int): Input channels
+        outchannels (int): Output channels
+        kernel_size (int): Kernel size
+        downsample (bool, optional): Wether to do downsample. Defaults to False.
+        expansion (int, optional): Wether to do downsample. Defaults to 3.
+    """
+    super().__init__(inchannels, outchannels, kernel_size, downsample)
     # Save expansion hyper-parameter
     self.expansion = expansion
     midchannels = self.outchannels * self.expansion
@@ -144,13 +151,17 @@ class ConvNext(Block):
                kernel_size: int,
                downsample=False,
                expansion=4) -> None:
-    super().__init__(inchannels, outchannels, kernel_size, downsample)
-
-    '''
-    A state of the art architecture capable of matching the performance
+    """A state of the art architecture capable of matching the performance
     of trasformers on image classification tasks.
-    '''
 
+    Args:
+        inchannels (int): Input channels
+        outchannels (int): Output channels
+        kernel_size (int): Kernel size
+        downsample (bool, optional): Wether to do downsample. Defaults to False.
+        expansion (int, optional): Wether to do downsample. Defaults to 4.
+    """
+    super().__init__(inchannels, outchannels, kernel_size, downsample)
     # Save expansion hyper-parameter
     self.expansion = expansion
     midchannels = self.outchannels * self.expansion
@@ -231,12 +242,17 @@ class MobileNetv3(Block):
                kernel_size: int,
                downsample=False,
                expansion=3) -> None:
-    super().__init__(inchannels, outchannels, kernel_size, downsample)
-
-    '''
-    An Imporved version of the MobileNetv2 block. It uses different activation
+    """An Imporved version of the MobileNetv2 block. It uses different activation
     functions and a 'squeeze and excite' layer
-    '''
+
+    Args:
+        inchannels (int): Input channels
+        outchannels (int): Output channels
+        kernel_size (int): Kernel size
+        downsample (bool, optional): Wether to do downsample. Defaults to False.
+        expansion (int, optional): Wether to do downsample. Defaults to 3.
+    """
+    super().__init__(inchannels, outchannels, kernel_size, downsample)
 
     self.expansion = expansion
     midchannels = self.outchannels * self.expansion

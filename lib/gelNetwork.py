@@ -8,9 +8,23 @@ import types
 from typing import List
 
 def block_builder(block: str, ks: int, inchan: int, outchan: int, expa: int, dwns: bool) -> Block:
-  '''
-  This function returns an instance of the specified block type
-  '''
+  """This function returns a Block given its description in terms of type, kernel_size, channels, 
+  expansion factor, and wether the block performs downsample
+
+  Args:
+      block (str): The name of the block type
+      ks (int): Kernel_size
+      inchan (int): Input channels
+      outchan (int): Output channels
+      expa (int): Expansion factor
+      dwns (bool): Wether to perform downsample
+
+  Raises:
+      ValueError: The block is not implemented in blocks.py
+
+  Returns:
+      Block: An appropriate instance of the block class
+  """
   if block == "MobileNetv2":
     block = MobileNetv2(
         inchannels=inchan,
@@ -39,6 +53,11 @@ def block_builder(block: str, ks: int, inchan: int, outchan: int, expa: int, dwn
 
 class GELnetwork(Module):
   def __init__(self, genome: List[List],*args, **kwargs) -> None:
+    """This is the net wrapper for the GELSearchSpace
+
+    Args:
+        genome (List[List]): The genome containing the network structure
+    """
     super(GELnetwork, self).__init__(*args, **kwargs)
     self.blocks = nn.ModuleList([])
 

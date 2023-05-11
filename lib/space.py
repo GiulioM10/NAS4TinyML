@@ -6,7 +6,7 @@ from individual import Individual, ISpace
 import types
 from typing import Union, Text
 from torch.nn.modules.batchnorm import _BatchNorm
-from typing import Union, Tuple, List
+from typing import Union, Tuple, List, Dict
 import time
 
 def compute_naswot_score(net: nn.Module, inputs: torch.Tensor, targets: torch.Tensor, device: torch.device):
@@ -213,11 +213,24 @@ def compute_tfm(exemplar: Individual,
 
 
 class Space(ISpace):
-  def __init__(self, net_length: int, block_list:list, ks_list: list,
-               channel_list: list, exp_list: list, downsample_blocks: list,
+  def __init__(self, net_length: int, block_list:List[str], ks_list: List[int],
+               channel_list: List[int], exp_list: List[int], downsample_blocks: List[int],
                dataset: DataLoader, device: torch.device, 
-               metrics  = ['naswot', 'logsynflow'] #, 'synflow'
+               metrics: List[str]  = ['naswot', 'logsynflow'] #, 'synflow'
                ) -> None:
+    """This object stores and manages all the info and properties of a given search space
+
+    Args:
+        net_length (int): Number of blocks to be stacked to form a network
+        block_list (List[str]): Block types
+        ks_list (List[int]): Kernel sizes
+        channel_list (List[int]): Output channels
+        exp_list (List[int]): Expansion terms
+        downsample_blocks (List[int]): Position of downsampling blocks
+        dataset (DataLoader): Dataset
+        device (torch.device): Device to be used
+        metrics (List[str], optional): Metrics to guide search. Defaults to ['naswot', 'logsynflow']#.
+    """
     self.net_length = net_length
     self.block_list = block_list
     self.ks_list = ks_list
@@ -229,6 +242,14 @@ class Space(ISpace):
     self.device = device
 
   def get_random_population(self, N: int) -> List[Individual]:
+    """Get a random population of networks
+
+    Args:
+        N (int): Size of population
+
+    Returns:
+        List[Individual]: The individuals composing the population
+    """
     individuals = []
     for _ in range(N):
       genome = self.sample_random_genome()
@@ -236,6 +257,11 @@ class Space(ISpace):
     return individuals
   
   def sample_random_genome(self) -> List[List]:
+    """Sample a random genome from the search space
+
+    Returns:
+        List[List]: The random genome
+    """
     genome = []
     for i in range(self.net_length):
       block = np.random.choice(self.block_list, 1)[0]
@@ -246,7 +272,15 @@ class Space(ISpace):
       genome.append([block, ker_size, channels, expansion, downsample])
     return genome
   
-  def compute_tfm(self, individual: Individual) -> dict:
+  def compute_tfm(self, individual: Individual) -> Dict:
+    """Compute training free metrics of an individual
+
+    Args:
+        individual (Individual): An individual
+    
+    Returns:
+          Dict: The various scores
+      """
     metric_trials, _, _ = compute_tfm(individual, self.dataset, self.device, self.metrics)
     return metric_trials
     
