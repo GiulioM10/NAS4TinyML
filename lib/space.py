@@ -70,7 +70,7 @@ def compute_synflow_per_weight(net, inputs, targets, device, mode='param', remap
 
     # Disable batch norm
     for layer in net.modules():
-        if isinstance(layer, (_BatchNorm, nn.BatchNorm2d)):
+        if isinstance(layer, (_BatchNorm, nn.BatchNorm2d, torch.nn.GroupNorm)):
             # TODO: this could be done with forward hooks
             layer._old_forward = layer.forward
             layer.forward = types.MethodType(_no_op, layer)
@@ -131,7 +131,7 @@ def compute_synflow_per_weight(net, inputs, targets, device, mode='param', remap
 
     # Enable batch norm again
     for layer in net.modules():
-        if isinstance(layer, (_BatchNorm, nn.BatchNorm2d)):
+        if isinstance(layer, (_BatchNorm, nn.BatchNorm2d, torch.nn.GroupNorm)):
             layer.forward = layer._old_forward
             del layer._old_forward
 
@@ -141,7 +141,7 @@ def compute_synflow_per_weight(net, inputs, targets, device, mode='param', remap
 
 METRIC_NAME_MAP = {
     # log(x)
-    'logsynflow': lambda n, inputs, targets, dev: compute_logsynflow(n, inputs, dev),
+    'logsynflow': compute_synflow_per_weight,
     # x
     'synflow': lambda n, inputs, targets, dev: compute_synflow_per_weight(n, inputs, targets, dev, remap=None),
     'naswot': compute_naswot_score,
