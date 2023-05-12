@@ -135,7 +135,7 @@ class Search:
         if load_from is not None and not loaded:
           prev_best, experiment_age, search_alg, pop_size, gen = self.analyzer.load_experiments_result(load_from)
           max_time = max_time - experiment_age
-          if search_alg is not "Random":
+          if search_alg != "Random":
             raise Exception("Search procedures do not match")
           if max_time <= 0:
             raise Exception("Experiment already concluded")
