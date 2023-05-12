@@ -98,7 +98,7 @@ def compute_synflow_per_weight(net, inputs, targets, device, mode='param', remap
     net.zero_grad()
     net.double()
     input_dim = list(inputs[0, :].shape)
-    inputs = torch.ones_like(inputs[0]).double().to(device)
+    inputs = torch.ones([1] + input_dim).double().to(device)
     output = net(inputs)
     if isinstance(output, tuple):
         output = output[1]
