@@ -16,10 +16,10 @@ class Individual:
     """The object containing all the info about a certain architecture. 
 
     Args:
-        genotype (List[List]): The genomic sequence of the individual
-        space (ISpace): The space to which the individual belongs
-        device (torch.device): The device on wich the individual's network will be loaded to
-        generation (int, optional): The generation of the individual. Defaults to 0.
+      genotype (List[List]): The genomic sequence of the individual
+      space (ISpace): The space to which the individual belongs
+      device (torch.device): The device on wich the individual's network will be loaded to
+      generation (int, optional): The generation of the individual. Defaults to 0.
     """
     super().__init__()
     self.genotype = genotype
@@ -37,7 +37,7 @@ class Individual:
     """Returns a torch.nn.Module object built usic the genome
 
     Returns:
-        Module: A neural network built according to the individual genes
+      Module: A neural network built according to the individual genes
     """
     net = GELnetwork(self.genotype)
 
@@ -62,8 +62,8 @@ class Individual:
     """COmpute or set an individual's metrics
 
     Args:
-        metrics (Dict, optional): Metrics dictionary or None. If None the metrics are computed and
-        then saved. Defaults to None.
+      metrics (Dict, optional): Metrics dictionary or None. If None the metrics are computed and
+      then saved. Defaults to None.
     """
     if metrics is None:
       self._metrics = self.space.compute_tfm(self)
@@ -75,7 +75,7 @@ class Individual:
     """Get indivisual's metrics
 
     Returns:
-        Dict: The individual's metrics
+      Dict: The individual's metrics
     """
     if not self.has_metrics:
       self.set_metrics()
@@ -85,8 +85,8 @@ class Individual:
     """Use this method to set an individual's cost info if they are already known.
 
     Args:
-        cost_info (Dict, optional): Cost Info dictionary or None. If None the info are computed and
-        then saved. Defaults to None.
+      cost_info (Dict, optional): Cost Info dictionary or None. If None the info are computed and
+      then saved. Defaults to None.
     """
     if cost_info is None:
       self._compute_cost_info()
@@ -97,7 +97,7 @@ class Individual:
     """Get indivisual's cost info
 
     Returns:
-        Dict: The individual's cost info
+      Dict: The individual's cost info
     """
     if self._cost_info is not None:
       return self._cost_info
@@ -109,7 +109,7 @@ class Individual:
     """Set individual's generation
 
     Args:
-        gen (int): The generation of the individual
+      gen (int): The generation of the individual
     """
     self.generation = gen
 

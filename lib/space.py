@@ -277,12 +277,32 @@ class Space(ISpace):
 
         Returns:
               Dict: The various scores
-          """
+        """
         metric_trials, _, _ = compute_tfm(individual, self.dataset, self.device, self.metrics)
         return metric_trials
+    
+    def mutate_nucleotide(self, nucleotide_type: int) -> Union[str, int, bool]:
+        if nucleotide_type == 0:
+            res = np.random.choice(self.block_list)
+        elif nucleotide_type == 1:
+            res = np.random.choice(self.ks_list)
+        elif nucleotide_type == 2:
+            res = np.random.choice(self.channel_list)
+        elif nucleotide_type == 3:
+            res = np.random.choice(self.exp_list)
+        elif nucleotide_type == 4:
+            res = np.random.choice([True, False])
+        else:
+            raise ValueError("Unknown nucleotide_type")
+        return res
     
     def mutation(self, individual: Individual, R: int = 1, skip_downsampling: bool = True):
         new_genotype = individual.genotype.copy()
         gene_length = len(new_genotype[0]) if not skip_downsampling else (len(new_genotype[0]) - 1)
-        print(gene_length)
+        start_gene = np.random.choice(self.net_length)
+        start_nucleotide = np.random.choice(gene_length)
+        for i in range(R):
+            new_genotype[(start_gene + ((start_nucleotide + i) // gene_length))%self.net_length][(start_nucleotide + i)%gene_length] \
+                = self.mutate_nucleotide((start_nucleotide + i)%gene_length)
+        return Individual(new_genotype, self, self.device)
         
