@@ -213,74 +213,76 @@ def compute_tfm(exemplar: Individual,
 
 
 class Space(ISpace):
-  def __init__(self, net_length: int, block_list:List[str], ks_list: List[int],
+    def __init__(self, net_length: int, block_list:List[str], ks_list: List[int],
                channel_list: List[int], exp_list: List[int], downsample_blocks: List[int],
                dataset: DataLoader, device: torch.device, 
                metrics: List[str]  = ['naswot', 'logsynflow'] #, 'synflow'
                ) -> None:
-    """This object stores and manages all the info and properties of a given search space
+        """This object stores and manages all the info and properties of a given search space
 
-    Args:
-        net_length (int): Number of blocks to be stacked to form a network
-        block_list (List[str]): Block types
-        ks_list (List[int]): Kernel sizes
-        channel_list (List[int]): Output channels
-        exp_list (List[int]): Expansion terms
-        downsample_blocks (List[int]): Position of downsampling blocks
-        dataset (DataLoader): Dataset
-        device (torch.device): Device to be used
-        metrics (List[str], optional): Metrics to guide search. Defaults to ['naswot', 'logsynflow']#.
-    """
-    self.net_length = net_length
-    self.block_list = block_list
-    self.ks_list = ks_list
-    self.channel_list = channel_list
-    self.exp_list = exp_list
-    self.downsample_blocks = downsample_blocks
-    self.dataset = dataset
-    self.metrics = metrics
-    self.device = device
+        Args:
+            net_length (int): Number of blocks to be stacked to form a network
+            block_list (List[str]): Block types
+            ks_list (List[int]): Kernel sizes
+            channel_list (List[int]): Output channels
+            exp_list (List[int]): Expansion terms
+            downsample_blocks (List[int]): Position of downsampling blocks
+            dataset (DataLoader): Dataset
+            device (torch.device): Device to be used
+            metrics (List[str], optional): Metrics to guide search. Defaults to ['naswot', 'logsynflow']#.
+        """
+        self.net_length = net_length
+        self.block_list = block_list
+        self.ks_list = ks_list
+        self.channel_list = channel_list
+        self.exp_list = exp_list
+        self.downsample_blocks = downsample_blocks
+        self.dataset = dataset
+        self.metrics = metrics
+        self.device = device
 
-  def get_random_population(self, N: int) -> List[Individual]:
-    """Get a random population of networks
-
-    Args:
-        N (int): Size of population
-
-    Returns:
-        List[Individual]: The individuals composing the population
-    """
-    individuals = []
-    for _ in range(N):
-      genome = self.sample_random_genome()
-      individuals.append(Individual(genome, self, self.device))
-    return individuals
+    def get_random_population(self, N: int) -> List[Individual]:
+        """Get a random population of networks      
+        Args:
+            N (int): Size of population     
+        Returns:
+            List[Individual]: The individuals composing the population
+        """
+        individuals = []
+        for _ in range(N):
+          genome = self.sample_random_genome()
+          individuals.append(Individual(genome, self, self.device))
+        return individuals
   
-  def sample_random_genome(self) -> List[List]:
-    """Sample a random genome from the search space
+    def sample_random_genome(self) -> List[List]:
+        """Sample a random genome from the search space
 
-    Returns:
-        List[List]: The random genome
-    """
-    genome = []
-    for i in range(self.net_length):
-      block = np.random.choice(self.block_list, 1)[0]
-      ker_size = np.random.choice(self.ks_list, 1)[0]
-      channels = np.random.choice(self.channel_list, 1)[0]
-      expansion = np.random.choice(self.exp_list, 1)[0]
-      downsample = (i + 1) in self.downsample_blocks
-      genome.append([block, ker_size, channels, expansion, downsample])
-    return genome
+        Returns:
+            List[List]: The random genome
+        """
+        genome = []
+        for i in range(self.net_length):
+          block = np.random.choice(self.block_list, 1)[0]
+          ker_size = np.random.choice(self.ks_list, 1)[0]
+          channels = np.random.choice(self.channel_list, 1)[0]
+          expansion = np.random.choice(self.exp_list, 1)[0]
+          downsample = (i + 1) in self.downsample_blocks
+          genome.append([block, ker_size, channels, expansion, downsample])
+        return genome
   
-  def compute_tfm(self, individual: Individual) -> Dict:
-    """Compute training free metrics of an individual
+    def compute_tfm(self, individual: Individual) -> Dict:
+        """Compute training free metrics of an individual       
+        Args:
+            individual (Individual): An individual
 
-    Args:
-        individual (Individual): An individual
+        Returns:
+              Dict: The various scores
+          """
+        metric_trials, _, _ = compute_tfm(individual, self.dataset, self.device, self.metrics)
+        return metric_trials
     
-    Returns:
-          Dict: The various scores
-      """
-    metric_trials, _, _ = compute_tfm(individual, self.dataset, self.device, self.metrics)
-    return metric_trials
-    
+    def mutation(self, individual: Individual, R: int = 1, skip_downsampling: bool = True):
+        new_genotype = individual.genotype.copy()
+        gene_length = len(new_genotype[0]) if not skip_downsampling else (len(new_genotype) - 1)
+        print(gene_length)
+        
