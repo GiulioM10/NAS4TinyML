@@ -91,7 +91,22 @@ class Search:
             break
     return best
   
-  def mutate(self, individuals: List[Individual], R: int = 1, P: int =1, generation: int = 0, skip_downsampling: bool = True):
+  def mutate(self, individuals: List[Individual],
+             R: int = 1, P: int =1,
+             generation: int = 0,
+             skip_downsampling: bool = True) -> List[Individual]:
+    """Generate mutated individual starting from a population
+
+    Args:
+        individuals (List[Individual]): The ancestors to mutate
+        R (int, optional): Number of nucleotides to muate. Defaults to 1.
+        P (int, optional): Number of different mutations. Defaults to 1.
+        generation (int, optional): The generation of the individuals. Defaults to 0.
+        skip_downsampling (bool, optional): Wether to consider downsampling or not. Defaults to True.
+
+    Returns:
+        List[Individual]: Mutated individuals
+    """
     new_individuals = []
     for _ in range(P):
       new_individuals += [self.space.mutation(individual, R, skip_downsampling).set_generation(generation)\
@@ -112,17 +127,21 @@ class Search:
         Exception: The experiment has already ended
     """
     elaps = 0
+    loaded = False
     start = time.time()
     while elaps < max_time:
         elaps_save_time = 0
         individuals = []
-        if load_from is not None:
-          prev_best, experiment_age, pop_size, = self.analyzer.load_experiments_result(load_from)
+        if load_from is not None and not loaded:
+          prev_best, experiment_age, search_alg, pop_size, gen = self.analyzer.load_experiments_result(load_from)
           max_time = max_time - experiment_age
+          if search_alg is not "Random":
+            raise Exception("Search procedures do not match")
           if max_time <= 0:
-             raise Exception("Experiment already concluded")
+            raise Exception("Experiment already concluded")
           for best_ind in prev_best:
             individuals.append(best_ind)
+          loaded = True
         start_save_time = time.time()
         while elaps_save_time < save_time:
             new_network = self.population_init(1)[0]
@@ -134,6 +153,30 @@ class Search:
         best = self.return_best(individuals)
         end = time.time()
         elaps = (end - start)/60
-        self.analyzer.snapshot_experiment(best, elaps)
+        self.analyzer.snapshot_experiment(best, elaps, "Random")
         prev_best = best
     print("End")
+    
+  def freeREAminus(self, max_time: float, save_time:float, pop_size: int = 25, sample_size:int = 5, load_from = None):
+    start = time.time()
+    population = self.population_init(pop_size)
+    end = time.time(); elaps = (end - start)/60
+    print("Initialization done in {} minutes".format(elaps))
+    
+    step = 0
+    while elaps <= max_time:
+      while True:
+        sampled = np.random.choice(population, sample_size)
+        for individual in sampled:
+          if not(individual.has_metrics):
+            individual.set_metrics()
+        parent = self.return_top_k(sampled, 1)
+        offspring = self.mutate(parent, 1, 1, step + 1)[0]
+        if self._is_feasible(offspring):
+          break
+      population.append(offspring)
+      population.pop(0)
+      step += 1
+      end = time.time(); elaps = (end - start)/60
+    
+    

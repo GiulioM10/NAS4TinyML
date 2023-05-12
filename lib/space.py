@@ -69,7 +69,7 @@ def compute_synflow_per_weight(net, inputs, targets, device, mode='param', remap
 
     # Disable batch norm
     for layer in net.modules():
-        if isinstance(layer, _BatchNorm):
+        if isinstance(layer, (_BatchNorm, nn.BatchNorm2d)):
             # TODO: this could be done with forward hooks
             layer._old_forward = layer.forward
             layer.forward = types.MethodType(_no_op, layer)
@@ -107,7 +107,7 @@ def compute_synflow_per_weight(net, inputs, targets, device, mode='param', remap
     def synflow(layer):
         if layer.weight.grad is not None:
             if remap is not None:
-                g = torch.log(torch.abs(layer.weight.grad) + 1)
+                g = torch.log(layer.weight.grad + 1)
                 # remap_fun = {
                 #     'log': lambda x: torch.log(x + 1),
                 #     # Other reparametrizations can be added here

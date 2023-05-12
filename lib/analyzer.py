@@ -13,13 +13,15 @@ class Analyzer():
         """
         self.output_file = output_file
     
-    def snapshot_experiment(self, population: List[Individual], elapsed_time: float) -> None:
+    def snapshot_experiment(self, population: List[Individual], elapsed_time: float, search_algorithm: str, gen: int = None) -> None:
         """Save current state of an experiment i.e. all of the members of the current population
         and the currently elapsed time since experiment begun
 
         Args:
             population (List[Individual]): The networks to be saved
             elapsed_time (float): Minutes since beginning of the experiment
+            search_algorithm (str): Search algorithm
+            gen (int, optional): generation of the experiment
 
         Returns:
             None: The data is stored in a json file
@@ -27,6 +29,10 @@ class Analyzer():
         output = {}
         output["pop_size"] = len(population)
         output["elapsed_minutes"] = elapsed_time
+        output["search_algorithm"] = search_algorithm
+        
+        if search_algorithm == "FreeREA" and gen is not None:
+            output["generation"] = gen
 
         def convert_int64(obj):
             if isinstance(obj, np.int64):
@@ -53,7 +59,7 @@ class Analyzer():
             device (torch.device, optional): The device we want to assign the networks. Defaults to None.
 
         Returns:
-            Tuple: A lists of Individuals, the elapsed time and the length of the individual list
+            Tuple: A lists of Individuals, the elapsed time, the algorithm used to find the results the length of the individual list and the generation
         """
         if file_path is None:
             file_path = self.output_file
@@ -68,4 +74,11 @@ class Analyzer():
             results.append(ind)
         elapsed_time = data["elapsed_minutes"]
         pop_size = data["pop_size"]
-        return results, elapsed_time, pop_size
+        search_alg = data["search_algorithm"]
+        
+        if "generation" in data.keys():
+            gen = data["generation"]
+            return results, elapsed_time, search_alg, pop_size, gen
+        
+        else:
+            return results, elapsed_time, search_alg, pop_size, None
