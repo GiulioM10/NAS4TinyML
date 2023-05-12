@@ -21,7 +21,7 @@ def disable_batchnorm(net: nn.Module) -> nn.Module:
     """
     # Disable batch norm layers
     for layer in net.modules():
-        if isinstance(layer, _BatchNorm):
+        if isinstance(layer, (_BatchNorm, nn.BatchNorm2d, torch.nn.GroupNorm)):
             layer._old_forward = layer.forward
             layer.forward = types.MethodType(no_op, layer)
 
@@ -108,7 +108,7 @@ def compute_logsynflow(
 
     # Enable batch norm again
     for layer in net.modules():
-        if isinstance(layer, _BatchNorm):
+        if isinstance(layer, (_BatchNorm, nn.BatchNorm2d, torch.nn.GroupNorm)):
             layer.forward = layer._old_forward
             del layer._old_forward
 
