@@ -7,6 +7,7 @@ import types
 from typing import Union, Text
 from torch.nn.modules.batchnorm import _BatchNorm
 from typing import Union, Tuple, List, Dict
+from logsynflow import compute_logsynflow
 import time
 
 def compute_naswot_score(net: nn.Module, inputs: torch.Tensor, targets: torch.Tensor, device: torch.device):
@@ -140,7 +141,7 @@ def compute_synflow_per_weight(net, inputs, targets, device, mode='param', remap
 
 METRIC_NAME_MAP = {
     # log(x)
-    'logsynflow': compute_synflow_per_weight,
+    'logsynflow': lambda n, inputs, targets, dev: compute_logsynflow(n, inputs, dev),
     # x
     'synflow': lambda n, inputs, targets, dev: compute_synflow_per_weight(n, inputs, targets, dev, remap=None),
     'naswot': compute_naswot_score,
