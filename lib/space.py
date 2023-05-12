@@ -283,6 +283,6 @@ class Space(ISpace):
     
     def mutation(self, individual: Individual, R: int = 1, skip_downsampling: bool = True):
         new_genotype = individual.genotype.copy()
-        gene_length = len(new_genotype[0]) if not skip_downsampling else (len(new_genotype) - 1)
+        gene_length = len(new_genotype[0]) if not skip_downsampling else (len(new_genotype[0]) - 1)
         print(gene_length)
         
