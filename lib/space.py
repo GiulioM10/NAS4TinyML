@@ -131,7 +131,7 @@ def compute_synflow_per_weight(net, inputs, targets, device, mode='param', remap
 
     # Enable batch norm again
     for layer in net.modules():
-        if isinstance(layer, _BatchNorm):
+        if isinstance(layer, (_BatchNorm, nn.BatchNorm2d)):
             layer.forward = layer._old_forward
             del layer._old_forward
 
