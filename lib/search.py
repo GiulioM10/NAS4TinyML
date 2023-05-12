@@ -90,6 +90,14 @@ class Search:
         else:
             break
     return best
+  
+  def mutate(self, individuals: List[Individual], R: int = 1, P: int =1, generation: int = 0, skip_downsampling: bool = True):
+    new_individuals = []
+    for _ in range(P):
+      new_individuals += [self.space.mutation(individual, R, skip_downsampling).set_generation(generation)\
+                          for individual in individuals]
+      
+    return new_individuals
 
   def random(self, max_time: float, save_time: float, load_from: str = None):
     """Perform a random search on the search space
