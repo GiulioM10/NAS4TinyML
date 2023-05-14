@@ -1,11 +1,3 @@
-import sys
-import subprocess
-import torch
-import pyvww
-import torchvision
-from torchvision import transforms as T
-from torch.utils.data import DataLoader
-
 def get_dataloaders():
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pyvww'])
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'fvcore'])
