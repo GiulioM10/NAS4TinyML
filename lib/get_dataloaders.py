@@ -9,6 +9,15 @@ from torch.utils.data import DataLoader
 def get_dataloaders():
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pyvww'])
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'fvcore'])
+    
+    import sys
+    import subprocess
+    import torch
+    import pyvww
+    import torchvision
+    from torchvision import transforms as T
+    from torch.utils.data import DataLoader
+    
     norm = T.Normalize(
         mean=[0.4914, 0.4822, 0.4465],
         std=[0.2023, 0.1994, 0.2010]
