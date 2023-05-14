@@ -1,7 +1,7 @@
 import sys
 import subprocess
 
-def get_dataloaders():
+def get_dataloaders(batch_size = 64, resize = 112):
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pyvww'])
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'fvcore'])
     
@@ -18,7 +18,7 @@ def get_dataloaders():
 
     #Prepare the transforms applied to the images
     transforms = T.Compose([
-        T.Resize((112, 112)), #Fixed size
+        T.Resize((resize, resize)), #Fixed size
         T.ToTensor(), #Transform in a torch.tensor object
         norm #Normalization
     ])
@@ -32,14 +32,16 @@ def get_dataloaders():
                                                           annFile="/content/drive/MyDrive/annotations/instances_val.json", #Annotation file
                                                           transform = transforms #Transforms to be applied to the images
                                                           )
-    image, target = testset[5] #Extract an image from the dataset
-    print(image.size())
-    import numpy as np
-    import matplotlib.pyplot as plt
+    
+    test_load = DataLoader(
+        testset, batch_size=batch_size, shuffle=True
+    )
 
-    #Show image after retransforming it back
-    img = T.ToPILImage()(T.Normalize(mean =[-0.4914, -0.4822, -0.4465], std = [1, 1, 1])(T.Normalize(mean = [0,0,0], std = [1/0.2023, 1/0.1994, 1/0.2010])(image)))
-    plt.show(img)
+    val_load = DataLoader(
+        valset, batch_size=batch_size, shuffle=False
+    )
+    
+    return testset, test_load, valset, val_load
     
     
     
