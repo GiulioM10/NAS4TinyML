@@ -7,7 +7,6 @@ import types
 from typing import Union, Text
 from torch.nn.modules.batchnorm import _BatchNorm
 from typing import Union, Tuple, List, Dict
-from logsynflow import compute_logsynflow
 import time
 
 def compute_naswot_score(net: nn.Module, inputs: torch.Tensor, targets: torch.Tensor, device: torch.device):
