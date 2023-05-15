@@ -178,12 +178,12 @@ class Search:
       max_time = max_time - elapsed_time
       if search_alg != "FreeREA":
         raise Exception("Search procedures do not match")
-      if max_time <= 0:
+      if max_time - elapsed_time <= 0:
         raise Exception("Experiment already concluded")
       if pop_size != l_pop_size:
         raise Exception("Loaded and expressed pop sizes do not match")
       population = results
-      start = time.time(); elaps = 0
+      start = time.time(); elaps = elapsed_time
       
     while elaps <= max_time:
       while True:
