@@ -21,7 +21,7 @@ class Search:
     self.max_flops = max_flops
     self.analyzer = analyzer
 
-  def _is_feasible(self, individual: Individual) -> bool:
+  def is_feasible(self, individual: Individual) -> bool:
     """Return wether an Individual satisfies the constraints
 
     Args:
@@ -47,7 +47,7 @@ class Search:
     population = []
     while len(population) < N:
       new = self.space.get_random_population(1)[0]
-      if self._is_feasible(new):
+      if self.is_feasible(new):
         population.append(new)
     return population
   
@@ -125,6 +125,7 @@ class Search:
 
     Raises:
         Exception: The experiment has already ended
+        Exception: The loaded data come from a different type of experiment
     """
     elaps = 0
     loaded = False
@@ -133,7 +134,7 @@ class Search:
         elaps_save_time = 0
         individuals = []
         if load_from is not None and not loaded:
-          prev_best, experiment_age, search_alg, pop_size, gen = self.analyzer.load_experiments_result(load_from)
+          _, prev_best, experiment_age, search_alg, _, _ = self.analyzer.load_experiments_result(self.space, load_from)
           max_time = max_time - experiment_age
           if search_alg != "Random":
             raise Exception("Search procedures do not match")
@@ -153,17 +154,35 @@ class Search:
         best = self.return_best(individuals)
         end = time.time()
         elaps = (end - start)/60
-        self.analyzer.snapshot_experiment(best, elaps, "Random")
+        self.analyzer.snapshot_experiment(best, [], elaps, "Random")
         prev_best = best
     print("End")
     
-  def freeREAminus(self, max_time: float, save_time:float, pop_size: int = 25, sample_size:int = 5, load_from = None):
-    start = time.time()
-    population = self.population_init(pop_size)
-    end = time.time(); elaps = (end - start)/60
-    print("Initialization done in {} minutes".format(elaps))
-    
-    step = 0
+  def freeREAminus(self, max_time: float, number_steps_save: int, pop_size: int = 25, sample_size:int = 5, load_from:str = None):
+    loaded = False
+    if load_from is not None:
+      results, prev_best, elapsed_time, search_alg, l_pop_size, gen =\
+        self.analyzer.load_experiments_result(self.space, load_from)
+      loaded = True
+    if not loaded:
+      start = time.time()
+      population = self.population_init(pop_size)
+      end = time.time(); elaps = (end - start)/60
+      print("Initialization done in {} minutes".format(elaps))
+      self.analyzer.snapshot_experiment([], population, elaps, "FreeREA", 0)
+      step = 0
+    else:
+      step = gen
+      max_time = max_time - elapsed_time
+      if search_alg != "FreeREA":
+        raise Exception("Search procedures do not match")
+      if max_time <= 0:
+        raise Exception("Experiment already concluded")
+      if pop_size != l_pop_size:
+        raise Exception("Loaded and expressed pop sizes do not match")
+      population = results
+      start = time.time(); elaps = 0
+      
     while elaps <= max_time:
       while True:
         sampled = np.random.choice(population, sample_size)
@@ -172,11 +191,20 @@ class Search:
             individual.set_metrics()
         parent = self.return_top_k(sampled, 1)
         offspring = self.mutate(parent, 1, 1, step + 1)[0]
-        if self._is_feasible(offspring):
+        if self.is_feasible(offspring):
           break
       population.append(offspring)
       population.pop(0)
       step += 1
       end = time.time(); elaps = (end - start)/60
+      # TODO every tot generations update the best and save a snapshot of the experiment
+      if step % number_steps_save == 0:
+        pool = population + prev_best
+        best = self.return_best(pool)
+        best[0].print_structure()
+        print(best[0].generation, best[0].get_metrics(), best[0].get_cost_info())
+        self.analyzer.snapshot_experiment(best, population, elaps, "FreeREA", step)
+        prev_best = best
+    print("End")
     
     

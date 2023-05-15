@@ -1,4 +1,4 @@
-from individual import Individual
+from individual import Individual, ISpace
 import numpy as np
 import json
 from typing import List, Tuple
@@ -13,7 +13,7 @@ class Analyzer():
         """
         self.output_file = output_file
     
-    def snapshot_experiment(self, population: List[Individual], elapsed_time: float, search_algorithm: str, gen: int = None) -> None:
+    def snapshot_experiment(self, best: List[Individual], population: List[Individual], elapsed_time: float, search_algorithm: str, gen: int = None) -> None:
         """Save current state of an experiment i.e. all of the members of the current population
         and the currently elapsed time since experiment begun
 
@@ -47,38 +47,52 @@ class Analyzer():
             indi["cost_info"] = individual.get_cost_info()
             indi["metrics"] = individual.get_metrics()
             output["population"].append(indi)
+        output["best"] = []
+        for individual in best:
+            indi = {}
+            indi["genome"] = individual.genotype
+            indi["cost_info"] = individual.get_cost_info()
+            indi["metrics"] = individual.get_metrics()
+            output["best"].append(indi)
         json_string = json.dumps(output, default=convert_int64)
         with open(self.output_file, 'w') as out_file:
             out_file.write(json_string)
 
-    def load_experiments_result(self, file_path: str = None, device: torch.device = None) -> Tuple:
+    def load_experiments_result(self, space: ISpace, file_path: str = None, device: torch.device = None) -> Tuple:
         """Load the Networks stored in a json file as well as how much time the experiment run
 
         Args:
+            space (ISpace): space to eich the individuals will be assigned
             file_path (str, optional): The path of the json file containing the information. Defaults to None.
             device (torch.device, optional): The device we want to assign the networks. Defaults to None.
 
         Returns:
-            Tuple: A lists of Individuals, the elapsed time, the algorithm used to find the results the length of the individual list and the generation
+            Tuple: The current population, the best found, the elapsed time, the algorithm used to find the results,
+            the size of the population and the generation (if avialable)
         """
         if file_path is None:
             file_path = self.output_file
         
         with open(file_path, 'r') as open_file:
             data = json.load(open_file)
+        if "generation" in data.keys():
+            gen = data["generation"]
+        else:
+            gen = 0
         results = []
         for individual in data["population"]:
-            ind = Individual(individual["genome"], None, device)
+            ind = Individual(individual["genome"], space, device, gen)
             ind.set_cost_info(individual["cost_info"])
             ind.set_metrics(individual["metrics"])
             results.append(ind)
+        prev_best = []
+        for individual in data["best"]:
+            ind = Individual(individual["genome"], space, device, gen)
+            ind.set_cost_info(individual["cost_info"])
+            ind.set_metrics(individual["metrics"])
+            prev_best.append(ind)
         elapsed_time = data["elapsed_minutes"]
         pop_size = data["pop_size"]
         search_alg = data["search_algorithm"]
         
-        if "generation" in data.keys():
-            gen = data["generation"]
-            return results, elapsed_time, search_alg, pop_size, gen
-        
-        else:
-            return results, elapsed_time, search_alg, pop_size, None
+        return results, prev_best, elapsed_time, search_alg, pop_size, gen
