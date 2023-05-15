@@ -110,7 +110,7 @@ class Search:
     new_individuals = []
     for _ in range(P):
       for individual in individuals:
-        gen = individual.genotype.copy  
+        gen = [gene[:] for gene in individual.genotype]
         ugo = self.space.mutation(gen, R, skip_downsampling)
         ugo.set_generation(generation)
         new_individuals.append(ugo)
