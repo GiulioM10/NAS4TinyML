@@ -108,9 +108,8 @@ class Search:
         List[Individual]: Mutated individuals
     """
     new_individuals = []
-    for _ in range(P):
-      for individual in individuals:
-        new_individuals.append(self.space.mutation(individual, R, skip_downsampling).set_generation(generation))
+    for individual in individuals:
+      new_individuals.append(self.space.mutation(individual, R, skip_downsampling).set_generation(generation))
     return new_individuals
 
   def random(self, max_time: float, save_time: float, load_from: str = None):
