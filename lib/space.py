@@ -297,7 +297,7 @@ class Space(ISpace):
         return res
     
     def mutation(self, genotype: List[List], R: int = 1, skip_downsampling: bool = True):
-        new_genotype = genotype.copy()
+        new_genotype = [gene[:] for gene in genotype]
         gene_length = len(new_genotype[0]) if not skip_downsampling else (len(new_genotype[0]) - 1)
         start_gene = np.random.choice(self.net_length)
         start_nucleotide = np.random.choice(gene_length)
