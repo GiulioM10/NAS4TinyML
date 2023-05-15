@@ -108,10 +108,12 @@ class Search:
         List[Individual]: Mutated individuals
     """
     new_individuals = []
-    for individual in individuals:
-      gen = individual.genotype.copy()
-      ugo = self.space.mutation(gen, R, skip_downsampling)
-      new_individuals.append(ugo)
+    for _ in range(P):
+      for individual in individuals:
+        gen = individual.genotype.copy  
+        ugo = self.space.mutation(gen, R, skip_downsampling)
+        ugo.set_generation(generation)
+        new_individuals.append(ugo)
     return new_individuals
 
   def random(self, max_time: float, save_time: float, load_from: str = None):
