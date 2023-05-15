@@ -109,7 +109,8 @@ class Search:
     """
     new_individuals = []
     for individual in individuals:
-      new_individuals.append(self.space.mutation(individual, R, skip_downsampling).set_generation(generation))
+      ugo = self.space.mutation(individual, R, skip_downsampling).set_generation(generation)
+      new_individuals.append(ugo)
     return new_individuals
 
   def random(self, max_time: float, save_time: float, load_from: str = None):
