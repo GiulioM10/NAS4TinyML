@@ -109,7 +109,8 @@ class Search:
     """
     new_individuals = []
     for individual in individuals:
-      ugo = self.space.mutation(individual, R, skip_downsampling)
+      gen = individual.genotype.copy()
+      ugo = self.space.mutation(gen, R, skip_downsampling)
       new_individuals.append(ugo)
     return new_individuals
 
