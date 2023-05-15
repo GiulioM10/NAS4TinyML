@@ -207,6 +207,7 @@ class Search:
         print(best[0].generation, best[0].get_metrics(), best[0].get_cost_info())
         self.analyzer.snapshot_experiment(best, population, elaps, "FreeREA", step)
         prev_best = best
+    self.analyzer.snapshot_experiment(best, population, elaps, "FreeREA", step)
     print("End")
     
     

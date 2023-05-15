@@ -46,6 +46,7 @@ class Analyzer():
             indi["genome"] = individual.genotype
             indi["cost_info"] = individual.get_cost_info()
             indi["metrics"] = individual.get_metrics()
+            indi["generation"] = individual.generation
             output["population"].append(indi)
         output["best"] = []
         for individual in best:
@@ -53,6 +54,7 @@ class Analyzer():
             indi["genome"] = individual.genotype
             indi["cost_info"] = individual.get_cost_info()
             indi["metrics"] = individual.get_metrics()
+            indi["generation"] = individual.generation
             output["best"].append(indi)
         json_string = json.dumps(output, default=convert_int64)
         with open(self.output_file, 'w') as out_file:
@@ -84,12 +86,14 @@ class Analyzer():
             ind = Individual(individual["genome"], space, device, gen)
             ind.set_cost_info(individual["cost_info"])
             ind.set_metrics(individual["metrics"])
+            ind.set_generation(individual["generation"])
             results.append(ind)
         prev_best = []
         for individual in data["best"]:
             ind = Individual(individual["genome"], space, device, gen)
             ind.set_cost_info(individual["cost_info"])
             ind.set_metrics(individual["metrics"])
+            ind.set_generation(individual["generation"])
             prev_best.append(ind)
         elapsed_time = data["elapsed_minutes"]
         pop_size = data["pop_size"]
