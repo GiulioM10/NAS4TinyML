@@ -92,7 +92,7 @@ class GYM:
             print("Loss function value: {:.2f} \t Accuracy: {:.2f}%\n".format(loss_value, accuracy))
             epoch += 1
             torch.save({
-                'epoch': epoch,
+                'epoch': epoch - 1,
                 'model_state_dict': net.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'loss': loss_value,
