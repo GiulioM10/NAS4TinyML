@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-class GYM:
+class Gym:
     def __init__(self, train_set:DataLoader, val_set: DataLoader, epochs: int, directory:str, device:torch.device, learning_rate = .01, weight_decay = .000001, momentum = 0.9) -> None:
         self.epochs = epochs
         self.directory = directory
