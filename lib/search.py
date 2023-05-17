@@ -1,3 +1,4 @@
+# GM 05/17/23
 import time
 import numpy as np
 from space import Space
@@ -52,6 +53,15 @@ class Search:
     return population
   
   def return_top_k(self, population: List[Individual], k: int):
+    """Return the k most fitted indivisuals of the population
+
+    Args:
+        population (List[Individual]): Population among which we wanto to choose the best
+        k (int): How many idivisuals are returned
+
+    Returns:
+        List: List containing the k most performing individuals
+    """
     individuals = [individual for individual in population if individual.has_metrics]
     for individual in individuals:
       individual.rank = []
@@ -69,6 +79,14 @@ class Search:
     return np.array(individuals)[:k]
   
   def return_best(self, population: List[Individual]):
+    """Return the individual(s) with the best rank
+
+    Args:
+        population (List[Individual]): Population among which we wanto to choose the best
+
+    Returns:
+        List: List containing the best individual(s)
+    """
     individuals = [individual for individual in population if individual.has_metrics]
     for individual in individuals:
       individual.rank = []
@@ -158,9 +176,24 @@ class Search:
         elaps = (end - start)/60
         self.analyzer.snapshot_experiment(best, [], elaps, "Random")
         prev_best = best
+    self.analyzer.snapshot_experiment(best, [], elaps, "Random")
     print("End")
     
   def freeREAminus(self, max_time: float, number_steps_save: int, pop_size: int = 25, sample_size:int = 5, load_from:str = None):
+    """Regularized evolutionary algorithm for individual selection
+
+    Args:
+        max_time (float): Duration of the experiment
+        number_steps_save (int): After how many steps we wish to save the best individual
+        pop_size (int, optional): How many individuals are alive at each step. Defaults to 25.
+        sample_size (int, optional): How many alive individuals are chosen at each step. Defaults to 5.
+        load_from (str, optional): Path of the file from which the experiment is loaded. Defaults to None.
+
+    Raises:
+        Exception: The search procedures do not match
+        Exception: Experiment already concluded
+        Exception: Population sizes do not match
+    """
     loaded = False
     if load_from is not None:
       results, prev_best, elapsed_time, search_alg, l_pop_size, gen =\
@@ -199,7 +232,7 @@ class Search:
       population.pop(0)
       step += 1
       end = time.time(); elaps = (end - start)/60
-      # TODO every tot generations update the best and save a snapshot of the experiment
+      # Every tot generations update the best and save a snapshot of the experiment
       if step % number_steps_save == 0:
         pool = population + prev_best
         best = self.return_best(pool)

@@ -1,7 +1,17 @@
+# GM 05/17/23
 import sys
 import subprocess
 
 def get_dataloaders(batch_size = 64, resize = 112):
+    """Install the PYVWW and FVCORE Packages. after that build the dataloaders for the visual-wakewords dataset
+
+    Args:
+        batch_size (int, optional): Size of each mini-batch. Defaults to 64.
+        resize (int, optional): The dimensions of the resized image (Non greater than 224). Defaults to 112.
+
+    Returns:
+        List: Dataloaders and datasets for visual-wakewords
+    """
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pyvww'])
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'fvcore'])
     
