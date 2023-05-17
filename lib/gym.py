@@ -118,7 +118,7 @@ class Gym:
         loss_function = self._get_loss()
         
         if load_checkpoint:
-            checkpoint = torch.load(self.directory)
+            checkpoint = torch.load(self.directory, map_location = self.device)
             net.load_state_dict(checkpoint['model_state_dict'])
             optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
             epoch = checkpoint['epoch']
@@ -165,7 +165,7 @@ class Gym:
             tuple: Loss value and accuracy of the model on the test/validation set
         """
         if load_from_checkpoint:
-            checkpoint = torch.load(self.directory)
+            checkpoint = torch.load(self.directory, map_location = self.device)
             net.load_state_dict(checkpoint['model_state_dict'])
         loss_function = self._get_loss()
         loss_value, accuracy = self._test(net, loss_function=loss_function)
