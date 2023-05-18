@@ -2,7 +2,7 @@
 import sys
 import subprocess
 
-def get_dataloaders(batch_size = 64, resize = 112):
+def get_dataloaders(batch_size = 64, resize = 112, kaggle: bool = False):
     """Install the PYVWW and FVCORE Packages. after that build the dataloaders for the visual-wakewords dataset
 
     Args:
@@ -32,14 +32,23 @@ def get_dataloaders(batch_size = 64, resize = 112):
         T.ToTensor(), #Transform in a torch.tensor object
         norm #Normalization
     ])
+    
+    if kaggle:
+        root = "/kaggle/input/visual-wake-words-224x224/all2014"
+        annFile = "/kaggle/input/visual-wake-words-224x224/annotations/"
+    else:
+        root = "/content/all2014"
+        annFile = "/content/drive/MyDrive/annotations/"
+        
+        
 
-    testset = pyvww.pytorch.VisualWakeWordsClassification(root="/content/all2014", #Folder containing all the images
-                                                          annFile="/content/drive/MyDrive/annotations/instances_train.json", #Annotation file
+    testset = pyvww.pytorch.VisualWakeWordsClassification(root=root, #Folder containing all the images
+                                                          annFile=(annFile + "instances_train.json"), #Annotation file
                                                           transform = transforms #Transforms to be applied to the images
                                                           )
 
-    valset = pyvww.pytorch.VisualWakeWordsClassification(root="/content/all2014", #Folder containing all the images
-                                                          annFile="/content/drive/MyDrive/annotations/instances_val.json", #Annotation file
+    valset = pyvww.pytorch.VisualWakeWordsClassification(root=root, #Folder containing all the images
+                                                          annFile=(annFile + "instances_val.json"), #Annotation file
                                                           transform = transforms #Transforms to be applied to the images
                                                           )
     
