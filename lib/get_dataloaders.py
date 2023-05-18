@@ -40,7 +40,7 @@ def get_dataloaders(batch_size = 64, resize = 112, kaggle: bool = False):
     else:
         root = "/content/all2014"
         annFile_train = "/content/drive/MyDrive/annotations/instances_train.json"
-        annFile_val = "/content/drive/MyDrive/annotations/instances_train.json"
+        annFile_val = "/content/drive/MyDrive/annotations/instances_val.json"
         
         
 
