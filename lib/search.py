@@ -174,7 +174,7 @@ class Search:
         best = self.return_best(individuals)
         end = time.time()
         elaps = (end - start)/60
-        self.analyzer.snapshot_experiment(best, [], elaps, "Random")
+        self.analyzer.snapshot_experiment(best, [], elaps + experiment_age, "Random")
         prev_best = best
     self.analyzer.snapshot_experiment(best, [], elaps, "Random")
     print("End")
@@ -205,7 +205,7 @@ class Search:
       end = time.time(); elaps = (end - start)/60
       print("Initialization done in {} minutes".format(elaps))
       self.analyzer.snapshot_experiment([], population, elaps, "FreeREA", 0)
-      step = 0; prev_best = []
+      step = 0; prev_best = []; elapsed_time = 0
     else:
       step = gen
       if search_alg != "FreeREA":
@@ -215,7 +215,8 @@ class Search:
       if pop_size != l_pop_size:
         raise Exception("Loaded and expressed pop sizes do not match")
       population = results
-      start = time.time(); elaps = elapsed_time
+      start = time.time()
+      elaps = elapsed_time
       
     while elaps <= max_time:
       while True:
@@ -230,7 +231,7 @@ class Search:
       population.append(offspring)
       population.pop(0)
       step += 1
-      end = time.time(); elaps = (end - start)/60
+      end = time.time(); elaps = (end - start)/60 + elapsed_time
       # Every tot generations update the best and save a snapshot of the experiment
       if step % number_steps_save == 0:
         pool = population + prev_best
