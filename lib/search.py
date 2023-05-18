@@ -205,7 +205,7 @@ class Search:
       end = time.time(); elaps = (end - start)/60
       print("Initialization done in {} minutes".format(elaps))
       self.analyzer.snapshot_experiment([], population, elaps, "FreeREA", 0)
-      step = 0
+      step = 0; prev_best = []
     else:
       step = gen
       max_time = max_time - elapsed_time
