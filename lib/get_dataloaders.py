@@ -35,7 +35,7 @@ def get_dataloaders(batch_size = 64, resize = 112, kaggle: bool = False):
     
     if kaggle:
         root = "/kaggle/input/visual-wake-words-224x224/all2014"
-        annFile = "/kaggle/input/visual-wake-words-224x224/annotations/"
+        annFile = "/kaggle/input/visual-wake-words-224x224/annotations/annotations/"
     else:
         root = "/content/all2014"
         annFile = "/content/drive/MyDrive/annotations/"
