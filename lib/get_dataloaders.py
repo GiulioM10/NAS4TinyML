@@ -35,20 +35,22 @@ def get_dataloaders(batch_size = 64, resize = 112, kaggle: bool = False):
     
     if kaggle:
         root = "/kaggle/input/visual-wake-words-224x224/all2014"
-        annFile = "/kaggle/input/visual-wake-words-224x224/annotations/annotations/"
+        annFile_train = "/kaggle/input/visual-wake-words-224x224/annotations/annotations/instances_train2014.json"
+        annFile_val = "/kaggle/input/visual-wake-words-224x224/annotations/annotations/instances_val2014.json"
     else:
         root = "/content/all2014"
-        annFile = "/content/drive/MyDrive/annotations/"
+        annFile_train = "/content/drive/MyDrive/annotations/instances_train.json"
+        annFile_val = "/content/drive/MyDrive/annotations/instances_train.json"
         
         
 
     testset = pyvww.pytorch.VisualWakeWordsClassification(root=root, #Folder containing all the images
-                                                          annFile=(annFile + "instances_train.json"), #Annotation file
+                                                          annFile=annFile_train, #Annotation file
                                                           transform = transforms #Transforms to be applied to the images
                                                           )
 
     valset = pyvww.pytorch.VisualWakeWordsClassification(root=root, #Folder containing all the images
-                                                          annFile=(annFile + "instances_val.json"), #Annotation file
+                                                          annFile=annFile_val, #Annotation file
                                                           transform = transforms #Transforms to be applied to the images
                                                           )
     
