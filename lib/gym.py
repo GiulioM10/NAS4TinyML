@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 
 class Gym:
-    def __init__(self, train_set:DataLoader, val_set: DataLoader, epochs: int, directory:str, device:torch.device, learning_rate = .005, weight_decay = .005, momentum = 0.9) -> None:
+    def __init__(self, train_set:DataLoader, val_set: DataLoader, epochs: int, directory:str, device:torch.device, learning_rate = .01, weight_decay = .00001, momentum = 0.9) -> None:
         """This object handles the training proceess and performance assesment of architectures
 
         Args:
