@@ -126,7 +126,7 @@ class Gym:
             accuracy = checkpoint['accuracy']
             if epoch >= self.epochs:
                 raise Exception("Model already trained for the desired number of epochs")
-            print("------ Epoch {}/{} - Perofrmance on validation set (CHECKPOINT) ------".format(epoch + 1, self.epochs))
+            print("------ Epoch {}/{} - Perofrmance on validation set (CHECKPOINT) ------".format(epoch, self.epochs))
             print("Loss function value: {:.2f} \t Accuracy: {:.2f}%\n".format(loss_value, accuracy))
             
             
@@ -143,7 +143,7 @@ class Gym:
             print("Loss function value: {:.2f} \t Accuracy: {:.2f}%\n".format(loss_value, accuracy))
             epoch += 1
             torch.save({
-                'epoch': epoch - 1,
+                'epoch': epoch,
                 'model_state_dict': net.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'loss': loss_value,
