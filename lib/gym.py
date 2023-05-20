@@ -64,6 +64,10 @@ class Gym:
             optimizer (_type_): An optimizer
             loss_function (_type_): A loss function
         """
+        samples = 0
+        cumulative_loss = 0.0
+        correct = 0
+        
         net = net.train()
         net.half()
         for images, labels in self.train_set:
