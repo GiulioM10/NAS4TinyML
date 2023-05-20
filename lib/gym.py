@@ -2,9 +2,11 @@
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
+from space import init_model, kaiming_normal
+import matplotlib.pyplot as plt
 
 class Gym:
-    def __init__(self, train_set:DataLoader, val_set: DataLoader, epochs: int, directory:str, device:torch.device, learning_rate = .01, weight_decay = .00001, momentum = 0.9) -> None:
+    def __init__(self, train_set:DataLoader, val_set: DataLoader, epochs: int, directory:str, device:torch.device, learning_rate = .1, weight_decay = .00001, momentum = 0.9) -> None:
         """This object handles the training proceess and performance assesment of architectures
 
         Args:
@@ -50,6 +52,10 @@ class Gym:
         loss = torch.nn.CrossEntropyLoss()
         return loss
     
+    def _get_lr_scheduler(self, optimizer):
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 5, 0.316)
+        return scheduler
+    
     def _train(self, net: torch.nn.Module, optimizer, loss_function) -> None:
         """Perform an epoch of training for a network
 
@@ -70,7 +76,15 @@ class Gym:
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            
+            samples += images.size(dim=0)
+            cumulative_loss += loss.item()
+            
+            _, predict = outputs.max(1)
+            correct += predict.eq(labels).sum().item()
+        
         net.float()
+        return cumulative_loss, correct/samples * 100
         
     def _test(self, net: torch.nn.Module, loss_function):
         """Get performance of a model on a test/validation set
@@ -116,14 +130,17 @@ class Gym:
         """
         optimizer = self._get_optimizer(net=net)
         loss_function = self._get_loss()
+        scheduler = self._get_lr_scheduler(optimizer)
         
         if load_checkpoint:
             checkpoint = torch.load(self.directory, map_location = self.device)
             net.load_state_dict(checkpoint['model_state_dict'])
             optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
             epoch = checkpoint['epoch']
             loss_value = checkpoint['loss']
             accuracy = checkpoint['accuracy']
+            results = checkpoint['results']
             if epoch >= self.epochs:
                 raise Exception("Model already trained for the desired number of epochs")
             print("------ Epoch {}/{} - Perofrmance on validation set (CHECKPOINT) ------".format(epoch, self.epochs))
@@ -131,23 +148,39 @@ class Gym:
             
             
         else:
-            print("------ INITIAL PERFORMANCE ON TEST SET ------")
+            results = {
+                "train_loss": [],
+                "train_accuracy": [],
+                "val_loss": [],
+                "val_accuracy": []
+            }
+            net = init_model(net)
+            print("------ INITIAL PERFORMANCE ON VALIDATION SET ------")
             loss_value, accuracy = self._test(net, loss_function=loss_function)
             print("Loss function value: {:.2f} \t Accuracy: {:.2f}%\n".format(loss_value, accuracy))
             epoch = 0
         
         while epoch < self.epochs:
-            self._train(net, optimizer, loss_function)
+            train_loss, train_accuracy = self._train(net, optimizer, loss_function)
             loss_value, accuracy = self._test(net, loss_function=loss_function)
+            print("------ Epoch {}/{} - Perofrmance on train set ------".format(epoch + 1, self.epochs))
+            print("Loss function value: {:.2f} \t Accuracy: {:.2f}%\n".format(train_loss, train_accuracy))
             print("------ Epoch {}/{} - Perofrmance on validation set ------".format(epoch + 1, self.epochs))
             print("Loss function value: {:.2f} \t Accuracy: {:.2f}%\n".format(loss_value, accuracy))
             epoch += 1
+            scheduler.step()
+            results["val_loss"].append(loss_value)
+            results["val_accuracy"].append(accuracy)
+            results["train_loss"].append(train_loss)
+            results["train_accuracy"].append(train_accuracy)
             torch.save({
                 'epoch': epoch,
                 'model_state_dict': net.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
+                'scheduler_state_dict': scheduler.state_dict(),
                 'loss': loss_value,
-                'accuracy': accuracy
+                'accuracy': accuracy,
+                'results': results
             }, self.directory)
         
         print("\n------ PERFORMANCE ON TEST SET AFTER TRAINING ------")
@@ -181,5 +214,23 @@ class Gym:
         loss_value, accuracy = self.compute_performance(net, load_from_checkpoint)
         print("\n------ PERFORMANCE ON TEST SET ------")
         print("Loss function value: {:.2f} \t Accuracy: {:.2f}%\n".format(loss_value, accuracy))
+        
+    def show_learning_curves(self):
+        checkpoint = torch.load(self.directory, map_location = self.device)
+        results = checkpoint['results']
+        epoch = checkpoint['epoch']
+        fig, (ax1, ax2) = plt.subplots(nrows=2)
+        ax1.plot(np.arange(1, epoch+1), results["train_loss"], label = "train")
+        ax1.scatter(np.arange(1, epoch+1), results["val_loss"], label = "validation")
+        ax1.set_xlabel('Epochs')
+        ax1.set_ylabel('Loss Function')
+        ax1.title("Learning curves (Loss)")
+        ax1.legend()
+        ax2.plot(np.arange(1, epoch+1), results["train_accuracy"], label = "train")
+        ax2.scatter(np.arange(1, epoch+1), results["val_accuracy"], label = "validation")
+        ax2.set_xlabel('Epochs')
+        ax2.set_ylabel('Accuracy (%)')
+        ax2.title("Learning curves (Accuracy)")
+        ax2.legend()
         
         
