@@ -6,7 +6,7 @@ from space import init_model, kaiming_normal
 import matplotlib.pyplot as plt
 
 class Gym:
-    def __init__(self, train_set:DataLoader, val_set: DataLoader, epochs: int, directory:str, device:torch.device, learning_rate = .1, weight_decay = .00001, momentum = 0.9) -> None:
+    def __init__(self, train_set:DataLoader, val_set: DataLoader, epochs: int, directory:str, device:torch.device, learning_rate = .01, weight_decay = .00001, momentum = 0.9) -> None:
         """This object handles the training proceess and performance assesment of architectures
 
         Args:
