@@ -222,18 +222,16 @@ class Gym:
         checkpoint = torch.load(self.directory, map_location = self.device)
         results = checkpoint['results']
         epoch = checkpoint['epoch']
-        fig, (ax1, ax2) = plt.subplots(nrows=2)
+        fig, (ax1, ax2) = plt.subplots(ncols=2)
         ax1.plot(np.arange(1, epoch+1), results["train_loss"], label = "train")
-        ax1.scatter(np.arange(1, epoch+1), results["val_loss"], label = "validation")
+        ax1.plot(np.arange(1, epoch+1), results["val_loss"], label = "validation")
         ax1.set_xlabel('Epochs')
         ax1.set_ylabel('Loss Function')
-        ax1.title("Learning curves (Loss)")
         ax1.legend()
         ax2.plot(np.arange(1, epoch+1), results["train_accuracy"], label = "train")
-        ax2.scatter(np.arange(1, epoch+1), results["val_accuracy"], label = "validation")
+        ax2.plot(np.arange(1, epoch+1), results["val_accuracy"], label = "validation")
         ax2.set_xlabel('Epochs')
         ax2.set_ylabel('Accuracy (%)')
-        ax2.title("Learning curves (Accuracy)")
         ax2.legend()
         
         
