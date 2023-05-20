@@ -158,7 +158,6 @@ class Gym:
                 "val_loss": [],
                 "val_accuracy": []
             }
-            net = init_model(net)
             print("------ INITIAL PERFORMANCE ON VALIDATION SET ------")
             loss_value, accuracy = self._test(net, loss_function=loss_function)
             print("Loss function value: {:.2f} \t Accuracy: {:.2f}%\n".format(loss_value, accuracy))
