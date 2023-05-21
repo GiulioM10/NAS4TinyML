@@ -6,7 +6,16 @@ from space import init_model, kaiming_normal
 import matplotlib.pyplot as plt
 
 class Gym:
-    def __init__(self, train_set:DataLoader, val_set: DataLoader, epochs: int, directory:str, device:torch.device, learning_rate = .01, weight_decay = .00001, momentum = 0.9) -> None:
+    def __init__(self, train_set:DataLoader,
+                 val_set: DataLoader,
+                 epochs: int, directory:str, 
+                 device:torch.device, 
+                 learning_rate = .005, 
+                 weight_decay = .000001, 
+                 momentum = 0.9,
+                 gamma = 0.25,
+                 step_size = 10
+                 ) -> None:
         """This object handles the training proceess and performance assesment of architectures
 
         Args:
@@ -27,6 +36,8 @@ class Gym:
         self.momentum = momentum
         self.train_set = train_set
         self.val_set = val_set
+        self.gamma = gamma
+        self.step_size = step_size
     
     def _get_optimizer(self, net:torch.nn.Module) -> torch.optim.SGD:
         """Return an optimizer to train a given architecture
@@ -53,7 +64,7 @@ class Gym:
         return loss
     
     def _get_lr_scheduler(self, optimizer):
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 5, 0.316)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, self.step_size, self.gamma)
         return scheduler
     
     def _train(self, net: torch.nn.Module, optimizer, loss_function) -> None:
