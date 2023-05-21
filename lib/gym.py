@@ -14,7 +14,7 @@ class Gym:
                  weight_decay = .000001, 
                  momentum = 0.9,
                  gamma = 0.25,
-                 step_size = 10
+                 step_size = 5
                  ) -> None:
         """This object handles the training proceess and performance assesment of architectures
 
