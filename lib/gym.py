@@ -196,6 +196,8 @@ class Gym:
                 'accuracy': accuracy,
                 'results': results
             }, self.directory)
+            
+            self.show_learning_curves(True)
         
         print("\n------ PERFORMANCE ON TEST SET AFTER TRAINING ------")
         loss_value, accuracy = self._test(net, loss_function=loss_function)
@@ -229,7 +231,7 @@ class Gym:
         print("\n------ PERFORMANCE ON TEST SET ------")
         print("Loss function value: {:.2f} \t Accuracy: {:.2f}%\n".format(loss_value, accuracy))
         
-    def show_learning_curves(self):
+    def show_learning_curves(self, save_file: bool = False):
         checkpoint = torch.load(self.directory, map_location = self.device)
         results = checkpoint['results']
         epoch = checkpoint['epoch']
@@ -244,5 +246,7 @@ class Gym:
         ax2.set_xlabel('Epochs')
         ax2.set_ylabel('Accuracy (%)')
         ax2.legend()
+        if save_file:
+            plt.savefig(self.directory + "my_plot.png")
         
         
