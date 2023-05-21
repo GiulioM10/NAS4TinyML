@@ -235,7 +235,7 @@ class Gym:
         checkpoint = torch.load(self.directory, map_location = self.device)
         results = checkpoint['results']
         epoch = checkpoint['epoch']
-        fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(8, 16))
+        fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(16, 8))
         ax1.plot(np.arange(1, epoch+1), results["train_loss"], label = "train")
         ax1.plot(np.arange(1, epoch+1), results["val_loss"], label = "validation")
         ax1.set_xlabel('Epochs')
