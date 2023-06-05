@@ -36,7 +36,7 @@ class Search:
         return True
     return False
 
-  def population_init(self, N: int, verbose: bool = False) -> List[Individual]:
+  def population_init(self, N: int, verbose: bool = False, alg: str = None) -> List[Individual]:
     """Get a valid intial population
 
     Args:
@@ -52,6 +52,8 @@ class Search:
         if verbose:
           print("Found number {}".format(len(population) + 1))
         population.append(new)
+        if alg is not None:
+          self.analyzer.snapshot_experiment(best = [], population = population, elapsed_time = 0, search_algorithm = alg, gen = 0)
     return population
   
   def return_top_k(self, population: List[Individual], k: int):
