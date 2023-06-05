@@ -50,7 +50,7 @@ class Search:
       new = self.space.get_random_population(1)[0]
       if self.is_feasible(new):
         if verbose:
-          print("Found number {}".format(len(population + 1)))
+          print("Found number {}".format(len(population) + 1))
         population.append(new)
     return population
   
