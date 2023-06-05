@@ -36,7 +36,7 @@ class Search:
         return True
     return False
 
-  def population_init(self, N: int) -> List[Individual]:
+  def population_init(self, N: int, verbose: bool = False) -> List[Individual]:
     """Get a valid intial population
 
     Args:
@@ -49,6 +49,8 @@ class Search:
     while len(population) < N:
       new = self.space.get_random_population(1)[0]
       if self.is_feasible(new):
+        if verbose:
+          print("Found number {}".format(len(population + 1)))
         population.append(new)
     return population
   
