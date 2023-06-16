@@ -182,7 +182,7 @@ class Search:
         best = self.return_best(individuals)
         end = time.time()
         elaps = (end - start)/60
-        self.analyzer.snapshot_experiment(best, {"metrics": metrics_vector, "cost_info": cost_vector}, elaps + experiment_age, "Random")
+        self.analyzer.snapshot_experiment(best, {"metrics": metrics_vector, "cost_info": cost_vector}, elaps, "Random")
         prev_best = best
     self.analyzer.snapshot_experiment(best, {"metrics": metrics_vector, "cost_info": cost_vector}, elaps, "Random")
     print("End")
