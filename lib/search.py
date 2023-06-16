@@ -182,9 +182,10 @@ class Search:
         best = self.return_best(individuals)
         end = time.time()
         elaps = (end - start)/60
-        self.analyzer.snapshot_experiment(best, {"metrics": metrics_vector, "cost_info": cost_vector}, elaps, "Random")
+        extra =  {"metrics": metrics_vector, "cost_info": cost_vector}
+        self.analyzer.snapshot_experiment(best,[], elaps, "Random", extra=extra)
         prev_best = best
-    self.analyzer.snapshot_experiment(best, {"metrics": metrics_vector, "cost_info": cost_vector}, elaps, "Random")
+    self.analyzer.snapshot_experiment(best, [], elaps, "Random", extra=extra)
     print("End")
     
   def freeREAminus(self, max_time: float, number_steps_save: int, pop_size: int = 25, sample_size:int = 5, load_from:str = None):

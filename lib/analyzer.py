@@ -2,7 +2,7 @@
 from individual import Individual, ISpace
 import numpy as np
 import json
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 import torch
 
 class Analyzer():
@@ -14,7 +14,7 @@ class Analyzer():
         """
         self.output_file = output_file
     
-    def snapshot_experiment(self, best: List[Individual], population: List[Individual], elapsed_time: float, search_algorithm: str, gen: int = None) -> None:
+    def snapshot_experiment(self, best: List[Individual], population: List[Individual], elapsed_time: float, search_algorithm: str, gen: int = None, extra: Dict = None) -> None:
         """Save current state of an experiment i.e. all of the members of the current population
         and the currently elapsed time since experiment begun
 
@@ -34,6 +34,9 @@ class Analyzer():
         
         if search_algorithm == "FreeREA" and gen is not None:
             output["generation"] = gen
+            
+        if extra is not None:
+            output["extra"] = extra
 
         def convert_int64(obj):
             if isinstance(obj, np.int64):
