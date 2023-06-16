@@ -154,6 +154,8 @@ class Search:
     elaps = 0
     loaded = False
     start = time.time()
+    metrics_vector = []
+    cost_vector = []
     while elaps < max_time:
         elaps_save_time = 0
         individuals = []
@@ -171,6 +173,8 @@ class Search:
         while elaps_save_time < save_time:
             new_network = self.population_init(1)[0]
             new_network.set_metrics()
+            metrics_vector.append(new_network.get_metrics())
+            cost_vector.append(new_network.get_cost_info())
             individuals.append(new_network)
             end_save_time = time.time()
             elaps_save_time = (end_save_time - start_save_time)/60
@@ -178,9 +182,9 @@ class Search:
         best = self.return_best(individuals)
         end = time.time()
         elaps = (end - start)/60
-        self.analyzer.snapshot_experiment(best, [], elaps + experiment_age, "Random")
+        self.analyzer.snapshot_experiment(best, {"metrics": metrics_vector, "cost_info": cost_vector}, elaps + experiment_age, "Random")
         prev_best = best
-    self.analyzer.snapshot_experiment(best, [], elaps, "Random")
+    self.analyzer.snapshot_experiment(best, {"metrics": metrics_vector, "cost_info": cost_vector}, elaps, "Random")
     print("End")
     
   def freeREAminus(self, max_time: float, number_steps_save: int, pop_size: int = 25, sample_size:int = 5, load_from:str = None):
