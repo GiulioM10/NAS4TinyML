@@ -104,6 +104,6 @@ class Analyzer():
         search_alg = data["search_algorithm"]
         
         if "extra" in data.keys():
-            return data["extra"]
+            return prev_best, data["extra"]
         else:
             return results, prev_best, elapsed_time, search_alg, pop_size, gen
